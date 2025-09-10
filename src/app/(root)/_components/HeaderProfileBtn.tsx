@@ -1,9 +1,27 @@
-import React from 'react'
+'use client';
+import LoginButton from '@/components/LoginButton';
+import { SignedOut, UserButton } from '@clerk/nextjs';
+import { User } from 'lucide-react';
+import React from 'react';
 
 const HeaderProfileBtn = () => {
   return (
-    <div>HeaderProfileBtn</div>
-  )
-}
+    <>
+      <UserButton>
+        <UserButton.MenuItems>
+          <UserButton.Link
+            label='Profile'
+            href='/profile'
+            labelIcon={<User />}
+          />
+        </UserButton.MenuItems>
+      </UserButton>
 
-export default HeaderProfileBtn
+      <SignedOut>
+        <LoginButton />
+      </SignedOut>
+    </>
+  );
+};
+
+export default HeaderProfileBtn;
