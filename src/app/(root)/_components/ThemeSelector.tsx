@@ -12,13 +12,14 @@ import {
   Palette,
   Sun,
 } from 'lucide-react';
+import { useMounted } from '@/hooks/useMounted';
 
 const ThemeSelector = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const { theme, setTheme } = useCodeEditorStore();
   const dropdownRef = useRef<HTMLDivElement>(null);
   const currentTheme = THEMES.find((t) => t.id === theme);
-  const [isMounted, setIsMounted] = useState(false);
+  const isMounted = useMounted();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -29,7 +30,6 @@ const ThemeSelector = () => {
         setIsOpen(false);
       }
     };
-    setIsMounted(true);
     document.addEventListener('mousedown', handleClickOutside);
 
     return () => document.removeEventListener('mousedown', handleClickOutside);

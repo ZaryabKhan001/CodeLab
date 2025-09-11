@@ -5,12 +5,14 @@ import Image from 'next/image';
 import { ChevronDownIcon, Lock, Sparkles } from 'lucide-react';
 import { LANGUAGE_CONFIG } from '../_constants';
 import useCodeEditorStore from '@/store/useCodeEditorStore';
+import { useMounted } from '@/hooks/useMounted';
 const LanguageSelector = ({ hasAccess = false }: { hasAccess: boolean }) => {
-  const [isMounted, setIsMounted] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { language, setLanguage } = useCodeEditorStore();
   const currentLanguageObj = LANGUAGE_CONFIG[language];
+
+  const isMounted = useMounted();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -21,15 +23,13 @@ const LanguageSelector = ({ hasAccess = false }: { hasAccess: boolean }) => {
         setIsOpen(false);
       }
     };
-
-    setIsMounted(true);
     document.addEventListener('mousedown', handleClickOutside);
 
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   const handleLanguageSelect = (langId: string) => {
-    if(!hasAccess && langId !== 'javascript') return;
+    if (!hasAccess && langId !== 'javascript') return;
     setLanguage(langId);
     setIsOpen(false);
   };
