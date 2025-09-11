@@ -35,6 +35,10 @@ const ThemeSelector = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  const handleSetTheme = (themeId: string) => {
+    setTheme(themeId);
+    setIsOpen(false);
+  };
 
   if (!isMounted) return null;
 
@@ -92,7 +96,7 @@ const ThemeSelector = () => {
                 relative group w-full flex items-center gap-3 px-3 py-2.5 hover:bg-[#262637] transition-all duration-200
                 ${theme === t.id ? 'bg-blue-500/10 text-blue-400' : 'text-gray-300'}
               `}
-                onClick={() => setTheme(t.id)}
+                onClick={() => handleSetTheme(t.id)}
               >
                 <div
                   className='absolute inset-0 bg-gradient-to-r from-blue-500/5 to-purple-500/5 opacity-0 

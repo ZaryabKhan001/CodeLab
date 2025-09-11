@@ -3,7 +3,7 @@ import { CodeEditorState } from '../types/index';
 import * as monaco from 'monaco-editor';
 
 const getInitialState = () => {
-  if (typeof window === "undefined") {
+  if (typeof window === 'undefined') {
     return {
       language: 'javascript',
       theme: 'vs-dark',
@@ -42,21 +42,18 @@ const useCodeEditorStore = create<CodeEditorState>((set, get) => {
     setLanguage: (language) => {
       const currentCode = get().editor?.getValue();
       if (currentCode) {
-        localStorage.setItem(
-          `editor-code-${get().language}`,
-          JSON.stringify(currentCode)
-        );
+        localStorage.setItem(`editor-code-${get().language}`, currentCode);
       }
       localStorage.setItem('editor-language', language);
       set({ language, output: '', error: null });
     },
     setTheme: (theme: string) => {
-        localStorage.setItem('editor-theme', theme);
-        set({ theme });
+      localStorage.setItem('editor-theme', theme);
+      set({ theme });
     },
     setFontSize: (fontSize) => {
-        localStorage.setItem('editor-font-size', fontSize.toString());
-        set({ fontSize });
+      localStorage.setItem('editor-font-size', fontSize.toString());
+      set({ fontSize });
     },
     runCode: async () => {},
   };

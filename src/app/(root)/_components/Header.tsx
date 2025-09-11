@@ -20,8 +20,8 @@ const Header = async () => {
 
   return (
     <div className='relative z-10'>
-      <div className='flex items-center lg:justify-between justify-center bg-[#0a0a0f]/80 backdrop-blur-xl  p-6 mb-4 rounded-lg'>
-        <div className='hidden lg:flex items-center gap-8'>
+      <div className='flex items-center lg:justify-between justify-center bg-[#0a0a0f]/80 backdrop-blur-xl  p-6 mb-4 rounded-lg flex-wrap gap-5'>
+        <div className='flex items-center justify-between w-full sm:w-fit gap-8'>
           <Link href='/' className='flex items-center gap-3 group relative'>
             <div
               className='absolute -inset-2 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-lg opacity-0 
@@ -64,8 +64,8 @@ const Header = async () => {
             </Link>
           </nav>
         </div>
-        <div className='flex items-center gap-4'>
-          <div className='flex items-center gap-3'>
+        <div className='flex items-center gap-4 flex-wrap'>
+          <div className='flex items-center gap-3 flex-wrap'>
             <ThemeSelector />
             <LanguageSelector hasAccess={Boolean(convexUser?.isPro) || false} />
           </div>
