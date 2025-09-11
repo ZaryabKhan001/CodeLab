@@ -3,7 +3,7 @@ import { CodeEditorState } from '../types/index';
 import * as monaco from 'monaco-editor';
 
 const getInitialState = () => {
-  if (typeof window === undefined) {
+  if (typeof window === "undefined") {
     return {
       language: 'javascript',
       theme: 'vs-dark',
@@ -55,7 +55,7 @@ const useCodeEditorStore = create<CodeEditorState>((set, get) => {
         set({ theme });
     },
     setFontSize: (fontSize) => {
-        localStorage.setItem('editor-fontSize', fontSize.toString());
+        localStorage.setItem('editor-font-size', fontSize.toString());
         set({ fontSize });
     },
     runCode: async () => {},

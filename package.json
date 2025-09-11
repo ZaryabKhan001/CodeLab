@@ -12,7 +12,7 @@
     "@clerk/nextjs": "6.31.9",
     "@monaco-editor/react": "4.7.0",
     "convex": "^1.17.3",
-    "framer-motion": "11.13.1",
+    "framer-motion": "^11.13.1",
     "lucide-react": "0.464.0",
     "next": "15.5.2",
     "react": "18.2.0",
