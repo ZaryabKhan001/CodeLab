@@ -1,15 +1,37 @@
 'use client';
-import useCodeEditorStore from '@/store/useCodeEditorStore';
+import useCodeEditorStore, {
+  getExecutionResult,
+} from '@/store/useCodeEditorStore';
 import { useUser } from '@clerk/nextjs';
 import { motion } from 'framer-motion';
 import { Loader2, Play } from 'lucide-react';
 import React from 'react';
+import { api } from '../../../../convex/_generated/api';
+import { useMutation } from 'convex/react';
 
 const RunButton = () => {
-  const { isLoaded } = useUser();
-  const { isRunning } = useCodeEditorStore();
+  const { isLoaded, user } = useUser();
+  const { isRunning, runCode, language } = useCodeEditorStore();
+  const saveExecution = useMutation(api.codeExecution.createCodeExecution);
 
-  const handleRun = async () => {};
+  const handleRun = async () => {
+    await runCode();
+    const result = getExecutionResult();
+
+    if (user && result) {
+      const { code, error, output } = result;
+      try {
+        await saveExecution({
+          language: language,
+          code: code,
+          error: error || undefined,
+          output: output || undefined,
+        });
+      } catch (error) {
+        console.log('Error in code saving on Convex', error);
+      }
+    }
+  };
 
   if (!isLoaded) return null;
 

@@ -1,6 +1,6 @@
 'use client';
 import useCodeEditorStore from '@/store/useCodeEditorStore';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { RotateCcwIcon, ShareIcon, TypeIcon } from 'lucide-react';
@@ -27,8 +27,22 @@ const EditorPanel = () => {
   };
 
   const handleRefresh = () => {
-    editor?.setValue('');
+    const defaultCode = LANGUAGE_CONFIG[language].defaultCode;
+    if (editor) editor?.setValue(defaultCode);
+    localStorage.removeItem(`code-editor-${language}`);
   };
+
+  useEffect(() => {
+    const savedCode = localStorage.getItem(`editor-code-${language}`);
+    const newCode = savedCode || LANGUAGE_CONFIG[language].defaultCode;
+
+    if (editor) editor?.setValue(newCode);
+  }, [editor, language]);
+
+  useEffect(() => {
+    const savedFontSize = localStorage.getItem('editor-font-size');
+    if (savedFontSize) setFontSize(Number(savedFontSize));
+  }, [setFontSize]);
 
   if (!mounted) return null;
 
