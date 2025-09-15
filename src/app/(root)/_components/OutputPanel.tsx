@@ -9,11 +9,15 @@ import {
   Copy,
   Terminal,
 } from 'lucide-react';
+import { useMounted } from '@/hooks/useMounted';
 
 const OutputPanel = () => {
   const [isCopied, setIsCopied] = useState(false);
   const { error, isRunning, output } = useCodeEditorStore();
   const hasContent = error || output;
+  const mounted = useMounted();
+
+  if (!mounted) return null;
 
   const handleCopy = async () => {
     if (!hasContent) return;
