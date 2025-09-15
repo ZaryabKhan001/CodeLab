@@ -15,6 +15,7 @@ import type {
 } from "convex/server";
 import type * as codeExecution from "../codeExecution.js";
 import type * as http from "../http.js";
+import type * as snippet from "../snippet.js";
 import type * as user from "../user.js";
 import type * as webhooks_clerk from "../webhooks/clerk.js";
 
@@ -29,6 +30,7 @@ import type * as webhooks_clerk from "../webhooks/clerk.js";
 declare const fullApi: ApiFromModules<{
   codeExecution: typeof codeExecution;
   http: typeof http;
+  snippet: typeof snippet;
   user: typeof user;
   "webhooks/clerk": typeof webhooks_clerk;
 }>;
