@@ -22,7 +22,9 @@ const EditorPanel = () => {
     setFontSize(value);
   };
 
-  const handleEditorChange = () => {};
+  const handleEditorChange = (value: string | undefined) => {
+    if (value) localStorage.setItem(`editor-code-${language}`, value);
+  };
 
   const handleRefresh = () => {
     editor?.setValue('');
