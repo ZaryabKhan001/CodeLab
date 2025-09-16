@@ -17,13 +17,18 @@ const Page = () => {
 
   //* No api for search, we filter it down on frontend
   const filteredSnippets = snippets?.filter((snippet) => {
-    return searchQuery
-      ? snippet.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          snippet.language.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          snippet.userName.toLowerCase().includes(searchQuery.toLowerCase())
-      : selectedLanguage
-        ? snippet.language.toLowerCase() === selectedLanguage?.toLowerCase()
-        : snippet;
+    const query = searchQuery.toLowerCase();
+    const lang = selectedLanguage?.toLowerCase();
+
+    const queryFilter = searchQuery
+      ? snippet.language.toLowerCase().includes(query) ||
+        snippet.userName.toLowerCase().includes(query) ||
+        snippet.title.toLowerCase().includes(query)
+      : true;
+
+    const langFilter = lang ? snippet.language === lang : true;
+
+    return queryFilter && langFilter;
   });
 
   const popularLanguages = ['go', 'python', 'javascript'];
