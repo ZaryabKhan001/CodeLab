@@ -1,5 +1,5 @@
-import { v } from 'convex/values';
-import { mutation } from './_generated/server';
+import { ConvexError, v } from 'convex/values';
+import { mutation, query } from './_generated/server';
 import { api } from './_generated/api';
 import { Id } from './_generated/dataModel';
 
@@ -36,5 +36,44 @@ export const createSnippet = mutation({
       code: args.code,
     });
     return { success: true, snippetId: snippetId };
+  },
+});
+
+export const getSnippets = query({
+  handler: async (ctx) => {
+    const snippets = await ctx.db.query('snippet').order('desc').collect();
+    return snippets;
+  },
+});
+
+export const isSnippetStarred = query({
+  args: { snippetId: v.id('snippet') },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new ConvexError('Not Authenticated');
+    }
+    const star = await ctx.db
+      .query('stars')
+      .withIndex('by_user_and_snipped_Id')
+      .filter(
+        (q) =>
+          q.eq(q.field('userId'), identity.subject) &&
+          q.eq(q.field('snippetId'), args.snippetId)
+      )
+      .first();
+    return star ? true : false;
+  },
+});
+
+export const getSnippetStarCount = query({
+  args: { snippetId: v.id('snippet') },
+  handler: async (ctx, args) => {
+    const users = await ctx.db
+      .query('stars')
+      .withIndex('by_snipped_Id')
+      .filter((q) => q.eq(q.field('snippetId'), args.snippetId))
+      .collect();
+    return users.length;
   },
 });

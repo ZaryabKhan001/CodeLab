@@ -35,7 +35,7 @@ export default defineSchema({
     userId: v.id('user'),
     snippetId: v.id('snippet'),
   })
-    .index('by_user_Id', ['userId'])
-    .index('by_snipped_Id', ['snippetId'])
-    .index('by_user_and_snipped_Id', ['userId', 'snippetId']),
+    .index('by_user_Id', ['userId']) // all snippets liked by specific user
+    .index('by_snipped_Id', ['snippetId']) // all users liked specific snippet
+    .index('by_user_and_snipped_Id', ['userId', 'snippetId']), // specific user like specific snippet or not
 });
