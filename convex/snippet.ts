@@ -77,3 +77,32 @@ export const getSnippetStarCount = query({
     return users.length;
   },
 });
+
+export const getSnippet = query({
+  args: { snippetId: v.id('snippet') },
+  handler: async (ctx, args) => {
+    const snippet = await ctx.db
+      .query('snippet')
+      .filter((q) => q.eq(q.field('_id'), args.snippetId))
+      .first();
+    return snippet;
+  },
+});
+
+export const deleteSnippet = mutation({
+  args: { snippetId: v.id('snippet') },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new ConvexError('Not Authenticated');
+    const snippet = await ctx.runQuery(api.snippet.getSnippet, {
+      snippetId: args.snippetId,
+    });
+
+    if (!snippet) throw new ConvexError('Snippet not found');
+
+    if (snippet.userId !== identity.subject) throw new Error('Not Authorized');
+
+    await ctx.db.delete(args.snippetId);
+    return true;
+  },
+});

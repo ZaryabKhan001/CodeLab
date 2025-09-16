@@ -6,16 +6,24 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Clock, Trash2, User } from 'lucide-react';
 import { useUser } from '@clerk/nextjs';
+import { useMutation } from 'convex/react';
+import { api } from '../../../../convex/_generated/api';
+import toast from 'react-hot-toast';
 
 const SnippetCard = ({ snippet }: { key: string; snippet: Snippet }) => {
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
   const { user } = useUser();
+  const deleteSnippet = useMutation(api.snippet.deleteSnippet);
 
   const handleDelete = async () => {
     setIsDeleting(true);
     try {
+      const result = await deleteSnippet({ snippetId: snippet._id });
+      if (!result) toast.error('Unable to delete snippet');
+      toast.success('Snippet deleted Successfully');
     } catch (error) {
       console.log('Error in snippet deletion', error);
+      toast.error('Unable to delete snippet');
     } finally {
       setIsDeleting(false);
     }
