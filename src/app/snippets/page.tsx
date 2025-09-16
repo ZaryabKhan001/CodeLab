@@ -31,7 +31,9 @@ const Page = () => {
     return queryFilter && langFilter;
   });
 
-  const popularLanguages = ['go', 'python', 'javascript'];
+  const popularLanguages = snippets
+    ?.slice(0, 3)
+    .map((language) => language.language);
 
   if (!snippets)
     return (
@@ -97,7 +99,7 @@ const Page = () => {
               <span className='text-sm text-gray-400'>Languages:</span>
             </div>
 
-            {popularLanguages.map((lang: string) => (
+            {popularLanguages?.map((lang: string) => (
               <button
                 key={lang}
                 onClick={() =>

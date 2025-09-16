@@ -32,7 +32,7 @@ export default defineSchema({
     content: v.string(),
   }).index('by_snipped_Id', ['snippetId']),
   stars: defineTable({
-    userId: v.id('user'),
+    userId: v.string(),
     snippetId: v.id('snippet'),
   })
     .index('by_user_Id', ['userId']) // all snippets liked by specific user

@@ -102,7 +102,65 @@ export const deleteSnippet = mutation({
 
     if (snippet.userId !== identity.subject) throw new Error('Not Authorized');
 
+    //* also delete all comments of snippet
+
+    const comments = await ctx.db
+      .query('snippetComment')
+      .withIndex('by_snipped_Id')
+      .filter((q) => q.eq(q.field('snippetId'), args.snippetId))
+      .collect();
+
+    for (const comment of comments) {
+      await ctx.db.delete(comment._id);
+    }
+
+    //* also delete all likes of snippet
+    const likes = await ctx.db
+      .query('stars')
+      .withIndex('by_snipped_Id')
+      .filter((q) => q.eq(q.field('snippetId'), args.snippetId))
+      .collect();
+
+    for (const like of likes) {
+      await ctx.db.delete(like._id);
+    }
+
     await ctx.db.delete(args.snippetId);
+    return true;
+  },
+});
+
+export const starSnippet = mutation({
+  args: { snippetId: v.id('snippet') },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new ConvexError('Not Authenticated');
+
+    const snippet = await ctx.runQuery(api.snippet.getSnippet, {
+      snippetId: args.snippetId,
+    });
+
+    if (!snippet) throw new ConvexError('Snippet not found');
+
+    const isAlreadyStarred = await ctx.db
+      .query('stars')
+      .withIndex('by_user_and_snipped_Id')
+      .filter(
+        (q) =>
+          q.eq(q.field('userId'), identity.subject) &&
+          q.eq(q.field('snippetId'), args.snippetId)
+      )
+      .first();
+
+    if (isAlreadyStarred) {
+      await ctx.db.delete(isAlreadyStarred._id);
+      return true;
+    }
+
+    await ctx.db.insert('stars', {
+      userId: identity.subject,
+      snippetId: args.snippetId,
+    });
     return true;
   },
 });
