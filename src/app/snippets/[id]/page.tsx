@@ -21,7 +21,6 @@ const Page = () => {
   const comments = useQuery(api.snippet.getSnippetComments, {
     snippetId: snippetId as Id<'snippet'>,
   });
-  const language = snippet?.language;
 
   if (snippet === undefined) return <SnippetLoadingSkeleton />;
 
@@ -102,7 +101,7 @@ const Page = () => {
               }}
             />
           </div>
-          <Comments comments={comments} />
+          <Comments snippetId={snippet?._id as Id<'snippet'>} />
         </div>
       </main>
     </div>
