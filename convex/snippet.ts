@@ -164,3 +164,16 @@ export const starSnippet = mutation({
     return true;
   },
 });
+
+export const getSnippetComments = query({
+  args: { snippetId: v.id('snippet') },
+  handler: async (ctx, args) => {
+    const comments = await ctx.db
+      .query('snippetComment')
+      .withIndex('by_snipped_Id')
+      .filter((q) => q.eq(q.field('snippetId'), args.snippetId))
+      .order('desc')
+      .collect();
+    return comments;
+  },
+});
