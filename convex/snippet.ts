@@ -2,6 +2,7 @@ import { ConvexError, v } from 'convex/values';
 import { mutation, query } from './_generated/server';
 import { api } from './_generated/api';
 import { Id } from './_generated/dataModel';
+import { Snippet } from '../src/types/index';
 
 export const createSnippet = mutation({
   args: {
@@ -50,9 +51,7 @@ export const isSnippetStarred = query({
   args: { snippetId: v.id('snippet') },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
-    if (!identity) {
-      throw new ConvexError('Not Authenticated');
-    }
+    if (!identity) return false;
     const star = await ctx.db
       .query('stars')
       .withIndex('by_user_and_snipped_Id')
@@ -224,5 +223,25 @@ export const deleteComment = mutation({
       throw new ConvexError('Not Authorized to delete this comment');
 
     await ctx.db.delete(args.commentId);
+  },
+});
+
+export const getSnippetsStarredByUser = query({
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    if (!identity) return [];
+
+    const stars = await ctx.db
+      .query('stars')
+      .withIndex('by_user_Id')
+      .filter((q) => q.eq(q.field('userId'), identity.subject))
+      .collect();
+
+    const snippets: (Snippet | null)[] = await Promise.all(
+      stars.map((star) => ctx.db.get(star.snippetId))
+    );
+
+    return snippets;
   },
 });
