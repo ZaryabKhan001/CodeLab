@@ -16,13 +16,13 @@ const StarButton = ({ snippetId }: { snippetId: Id<'snippet'> }) => {
     try {
       const result = await starSnippet({ snippetId: snippetId });
       if (!result) {
-        toast.error('Unable to Star/unStar');
+        toast.error('Unable to React');
         return;
       }
-      toast.success('Star/unStar Successfully');
+      toast.success('reacted Successfully');
     } catch (error) {
-      console.log('Unable to Star/unStar', error);
-      toast.error('Unable to Star/unStar');
+      console.log('Unable to React', error);
+      toast.error('Unable to React');
     } finally {
       setIsExecuting(false);
     }

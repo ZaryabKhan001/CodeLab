@@ -31,9 +31,9 @@ const Page = () => {
     return queryFilter && langFilter;
   });
 
-  const popularLanguages = snippets
-    ?.slice(0, 3)
-    .map((language) => language.language);
+  const languages = [...new Set(snippets?.map((snippet) => snippet.language))];
+
+  const popularLanguages = languages?.slice(0, 3);
 
   if (!snippets)
     return (
@@ -99,9 +99,9 @@ const Page = () => {
               <span className='text-sm text-gray-400'>Languages:</span>
             </div>
 
-            {popularLanguages?.map((lang: string) => (
+            {popularLanguages?.map((lang: string, index: number) => (
               <button
-                key={lang}
+                key={index}
                 onClick={() =>
                   setSelectedLanguage(lang === selectedLanguage ? null : lang)
                 }
