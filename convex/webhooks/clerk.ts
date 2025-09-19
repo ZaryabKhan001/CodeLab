@@ -4,6 +4,7 @@ import { WebhookEvent } from '@clerk/nextjs/server';
 import { api } from '../_generated/api';
 
 export const handleClerkWebhook = httpAction(async (ctx, req) => {
+  console.log("get")
   const webhookSecret = process.env.CLERK_WEBHOOK_SECRET;
   if (!webhookSecret)
     return new Response('clerk webhook secret is missing', {
@@ -35,7 +36,7 @@ export const handleClerkWebhook = httpAction(async (ctx, req) => {
     const name = `${first_name || ""} ${last_name || ""}`.trim();
 
     try {
-      await ctx.runMutation(api.user.syncUser, {
+      await ctx.runMutation(api.public.user.syncUser, {
         userId: id,
         email,
         name,

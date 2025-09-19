@@ -39,7 +39,7 @@ interface ProfileHeaderProps {
 }
 
 const ProfileHeader = ({ userStats, userData, user }: ProfileHeaderProps) => {
-  const starredSnippets = useQuery(api.snippet.getSnippetsStarredByUser);
+  const starredSnippets = useQuery(api.public.snippet.getSnippetsStarredByUser);
 
   const STATS = [
     {

@@ -12,7 +12,7 @@ import { useMutation } from 'convex/react';
 const RunButton = () => {
   const { isLoaded, user } = useUser();
   const { isRunning, runCode, language } = useCodeEditorStore();
-  const saveExecution = useMutation(api.codeExecution.createCodeExecution);
+  const saveExecution = useMutation(api.public.codeExecution.createCodeExecution);
 
   const handleRun = async () => {
     await runCode();

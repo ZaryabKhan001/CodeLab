@@ -20,6 +20,8 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import StarButton from '@/components/StarButton';
+import { Snippet } from '@/types';
+import { Id } from '../../../convex/_generated/dataModel';
 
 const Page = () => {
   const [activeTab, setActiveTab] = useState<'executions' | 'starred'>(
@@ -43,11 +45,11 @@ const Page = () => {
   ];
 
   const userStats = useQuery(
-    api.codeExecution.getUserStats,
+    api.public.codeExecution.getUserStats,
     user ? { userId: user.id } : 'skip'
   );
 
-  const starredSnippets = useQuery(api.snippet.getSnippetsStarredByUser);
+  const starredSnippets = useQuery(api.public.snippet.getSnippetsStarredByUser);
 
   const {
     results: executions,
@@ -55,13 +57,13 @@ const Page = () => {
     loadMore,
     isLoading: isLoadingExecutions,
   } = usePaginatedQuery(
-    api.codeExecution.allCodeExecutionsOfUser,
+    api.public.codeExecution.allCodeExecutionsOfUser,
     user ? { userId: user.id } : 'skip',
     { initialNumItems: 5 }
   );
 
   const userData = useQuery(
-    api.user.getUser,
+    api.public.user.getUser,
     user ? { userId: user.id } : 'skip'
   );
 
@@ -253,64 +255,67 @@ const Page = () => {
               {/* ACTIVE TAB IS STARS: */}
               {activeTab === 'starred' && (
                 <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
-                  {starredSnippets?.map((snippet) => (
-                    <div key={snippet._id} className='group relative'>
-                      <Link href={`/snippets/${snippet._id}`}>
-                        <div
-                          className='bg-black/20 rounded-xl border border-gray-800/50 hover:border-gray-700/50 
+                  {starredSnippets &&
+                    starredSnippets?.map((snippet) => (
+                      <div key={snippet?._id} className='group relative'>
+                        <Link href={`/snippets/${snippet?._id}`}>
+                          <div
+                            className='bg-black/20 rounded-xl border border-gray-800/50 hover:border-gray-700/50 
                           transition-all duration-300 overflow-hidden h-full group-hover:transform
                         group-hover:scale-[1.02]'
-                        >
-                          <div className='p-6'>
-                            <div className='flex items-center justify-between mb-4'>
-                              <div className='flex items-center gap-3'>
-                                <div className='relative'>
-                                  <div className='absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg blur opacity-20 group-hover:opacity-30 transition-opacity' />
-                                  <Image
-                                    src={`/${snippet.language}.png`}
-                                    alt={`${snippet.language} logo`}
-                                    className='relative z-10'
-                                    width={40}
-                                    height={40}
+                          >
+                            <div className='p-6'>
+                              <div className='flex items-center justify-between mb-4'>
+                                <div className='flex items-center gap-3'>
+                                  <div className='relative'>
+                                    <div className='absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg blur opacity-20 group-hover:opacity-30 transition-opacity' />
+                                    <Image
+                                      src={`/${snippet?.language}.png`}
+                                      alt={`${snippet?.language} logo`}
+                                      className='relative z-10'
+                                      width={40}
+                                      height={40}
+                                    />
+                                  </div>
+                                  <span className='px-3 py-1 bg-blue-500/10 text-blue-400 rounded-lg text-sm'>
+                                    {snippet?.language}
+                                  </span>
+                                </div>
+                                <div
+                                  className='absolute top-6 right-6 z-10'
+                                  onClick={(e) => e.preventDefault()}
+                                >
+                                  <StarButton
+                                    snippetId={snippet?._id as Id<'snippet'>}
                                   />
                                 </div>
-                                <span className='px-3 py-1 bg-blue-500/10 text-blue-400 rounded-lg text-sm'>
-                                  {snippet.language}
-                                </span>
                               </div>
-                              <div
-                                className='absolute top-6 right-6 z-10'
-                                onClick={(e) => e.preventDefault()}
-                              >
-                                <StarButton snippetId={snippet._id} />
+                              <h2 className='text-xl font-semibold text-white mb-3 line-clamp-1 group-hover:text-blue-400 transition-colors'>
+                                {snippet?.title}
+                              </h2>
+                              <div className='flex items-center justify-between text-sm text-gray-400'>
+                                <div className='flex items-center gap-2'>
+                                  <Clock className='w-4 h-4' />
+                                  <span>
+                                    {new Date(
+                                      snippet?._creationTime || ''
+                                    ).toLocaleDateString()}
+                                  </span>
+                                </div>
+                                <ChevronRight className='w-4 h-4 transform group-hover:translate-x-1 transition-transform' />
                               </div>
                             </div>
-                            <h2 className='text-xl font-semibold text-white mb-3 line-clamp-1 group-hover:text-blue-400 transition-colors'>
-                              {snippet.title}
-                            </h2>
-                            <div className='flex items-center justify-between text-sm text-gray-400'>
-                              <div className='flex items-center gap-2'>
-                                <Clock className='w-4 h-4' />
-                                <span>
-                                  {new Date(
-                                    snippet._creationTime
-                                  ).toLocaleDateString()}
-                                </span>
+                            <div className='px-6 pb-6'>
+                              <div className='bg-black/30 rounded-lg p-4 overflow-hidden'>
+                                <pre className='text-sm text-gray-300 font-mono line-clamp-3'>
+                                  {snippet?.code}
+                                </pre>
                               </div>
-                              <ChevronRight className='w-4 h-4 transform group-hover:translate-x-1 transition-transform' />
                             </div>
                           </div>
-                          <div className='px-6 pb-6'>
-                            <div className='bg-black/30 rounded-lg p-4 overflow-hidden'>
-                              <pre className='text-sm text-gray-300 font-mono line-clamp-3'>
-                                {snippet.code}
-                              </pre>
-                            </div>
-                          </div>
-                        </div>
-                      </Link>
-                    </div>
-                  ))}
+                        </Link>
+                      </div>
+                    ))}
 
                   {(!starredSnippets || starredSnippets.length === 0) && (
                     <div className='col-span-full text-center py-12'>

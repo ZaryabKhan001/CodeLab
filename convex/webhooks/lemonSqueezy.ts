@@ -1,4 +1,3 @@
-import { v } from 'convex/values';
 import { api, internal } from '../_generated/api';
 import { httpAction } from '../_generated/server';
 
@@ -19,7 +18,7 @@ export const handleLemonSqueezyWebhook = httpAction(async (ctx, request) => {
 
   try {
     const payload = await ctx.runAction(
-      internal.actions.lemonSqueezy.verifySignature,
+      internal.internals.lemonSqueezy.verifySignature,
       {
         rawBody: rawBody,
         signature: signature,
@@ -40,7 +39,7 @@ export const handleLemonSqueezyWebhook = httpAction(async (ctx, request) => {
   if (payload.meta.event_name === 'order_created') {
     const { data } = payload;
 
-    const { success } = await ctx.runMutation(api.user.upgradeToPro, {
+    const { success } = await ctx.runMutation(api.public.user.upgradeToPro, {
       email: data.attributes.user_email,
       customerId: data.attributes.customer_id.toString(),
       orderId: data.id,

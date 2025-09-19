@@ -13,11 +13,11 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
-import type * as actions_lemonSqueezy from "../actions/lemonSqueezy.js";
-import type * as codeExecution from "../codeExecution.js";
 import type * as http from "../http.js";
-import type * as snippet from "../snippet.js";
-import type * as user from "../user.js";
+import type * as internals_lemonSqueezy from "../internals/lemonSqueezy.js";
+import type * as public_codeExecution from "../public/codeExecution.js";
+import type * as public_snippet from "../public/snippet.js";
+import type * as public_user from "../public/user.js";
 import type * as webhooks_clerk from "../webhooks/clerk.js";
 import type * as webhooks_lemonSqueezy from "../webhooks/lemonSqueezy.js";
 
@@ -30,11 +30,11 @@ import type * as webhooks_lemonSqueezy from "../webhooks/lemonSqueezy.js";
  * ```
  */
 declare const fullApi: ApiFromModules<{
-  "actions/lemonSqueezy": typeof actions_lemonSqueezy;
-  codeExecution: typeof codeExecution;
   http: typeof http;
-  snippet: typeof snippet;
-  user: typeof user;
+  "internals/lemonSqueezy": typeof internals_lemonSqueezy;
+  "public/codeExecution": typeof public_codeExecution;
+  "public/snippet": typeof public_snippet;
+  "public/user": typeof public_user;
   "webhooks/clerk": typeof webhooks_clerk;
   "webhooks/lemonSqueezy": typeof webhooks_lemonSqueezy;
 }>;

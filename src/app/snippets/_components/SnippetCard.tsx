@@ -14,7 +14,7 @@ import StarButton from '@/components/StarButton';
 const SnippetCard = ({ snippet }: { key: string; snippet: Snippet }) => {
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
   const { user } = useUser();
-  const deleteSnippet = useMutation(api.snippet.deleteSnippet);
+  const deleteSnippet = useMutation(api.public.snippet.deleteSnippet);
 
   const handleDelete = async () => {
     setIsDeleting(true);

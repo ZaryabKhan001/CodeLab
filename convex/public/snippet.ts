@@ -1,8 +1,8 @@
 import { ConvexError, v } from 'convex/values';
-import { mutation, query } from './_generated/server';
-import { api } from './_generated/api';
-import { Id } from './_generated/dataModel';
-import { Snippet } from '../src/types/index';
+import { mutation, query } from '../_generated/server';
+import { api } from '../_generated/api';
+import { Id } from '../_generated/dataModel';
+import { Snippet } from '../../src/types';
 
 export const createSnippet = mutation({
   args: {
@@ -21,7 +21,7 @@ export const createSnippet = mutation({
     if (!identity) {
       return { success: false, message: 'Not Authenticated' };
     }
-    const user = await ctx.runQuery(api.user.getUser, {
+    const user = await ctx.runQuery(api.public.user.getUser, {
       userId: identity.subject,
     });
 
@@ -93,7 +93,7 @@ export const deleteSnippet = mutation({
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) throw new ConvexError('Not Authenticated');
-    const snippet = await ctx.runQuery(api.snippet.getSnippet, {
+    const snippet = await ctx.runQuery(api.public.snippet.getSnippet, {
       snippetId: args.snippetId,
     });
 
@@ -135,7 +135,7 @@ export const starSnippet = mutation({
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) throw new ConvexError('Not Authenticated');
 
-    const snippet = await ctx.runQuery(api.snippet.getSnippet, {
+    const snippet = await ctx.runQuery(api.public.snippet.getSnippet, {
       snippetId: args.snippetId,
     });
 
@@ -191,7 +191,7 @@ export const addComment = mutation({
 
     if (!user) throw new ConvexError('User not found');
 
-    const snippet = await ctx.runQuery(api.snippet.getSnippet, {
+    const snippet = await ctx.runQuery(api.public.snippet.getSnippet, {
       snippetId: args.snippetId,
     });
 

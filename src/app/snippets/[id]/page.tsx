@@ -15,10 +15,10 @@ import Comments from './_components/Comments';
 
 const Page = () => {
   const { id: snippetId } = useParams();
-  const snippet = useQuery(api.snippet.getSnippet, {
+  const snippet = useQuery(api.public.snippet.getSnippet, {
     snippetId: snippetId as Id<'snippet'>,
   });
-  const comments = useQuery(api.snippet.getSnippetComments, {
+  const comments = useQuery(api.public.snippet.getSnippetComments, {
     snippetId: snippetId as Id<'snippet'>,
   });
 

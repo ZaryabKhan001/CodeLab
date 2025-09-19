@@ -1,11 +1,11 @@
-import { api } from './_generated/api';
-import { mutation, query } from './_generated/server';
+import { api } from '../_generated/api';
+import { mutation, query } from '../_generated/server';
 import { v } from 'convex/values';
 
 export const syncUser = mutation({
   args: { userId: v.string(), email: v.string(), name: v.string() },
   handler: async (ctx, args) => {
-    const isUserAlreadyExists = await ctx.runQuery(api.user.getUser, {
+    const isUserAlreadyExists = await ctx.runQuery(api.public.user.getUser, {
       userId: args.userId,
     });
 

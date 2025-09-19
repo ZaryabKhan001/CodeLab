@@ -16,9 +16,9 @@ const Comments = ({ snippetId }: { snippetId: Id<'snippet'> }) => {
     null
   );
 
-  const comments = useQuery(api.snippet.getSnippetComments, { snippetId });
-  const addComment = useMutation(api.snippet.addComment);
-  const deleteComment = useMutation(api.snippet.deleteComment);
+  const comments = useQuery(api.public.snippet.getSnippetComments, { snippetId });
+  const addComment = useMutation(api.public.snippet.addComment);
+  const deleteComment = useMutation(api.public.snippet.deleteComment);
 
   const handleSubmitComment = async (content: string) => {
     try {

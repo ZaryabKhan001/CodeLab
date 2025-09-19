@@ -6,9 +6,9 @@ import { Id } from '../../convex/_generated/dataModel';
 import toast from 'react-hot-toast';
 
 const StarButton = ({ snippetId }: { snippetId: Id<'snippet'> }) => {
-  const starCount = useQuery(api.snippet.getSnippetStarCount, { snippetId });
-  const isStarred = useQuery(api.snippet.isSnippetStarred, { snippetId });
-  const starSnippet = useMutation(api.snippet.starSnippet);
+  const starCount = useQuery(api.public.snippet.getSnippetStarCount, { snippetId });
+  const isStarred = useQuery(api.public.snippet.isSnippetStarred, { snippetId });
+  const starSnippet = useMutation(api.public.snippet.starSnippet);
   const [isExecuting, setIsExecuting] = useState(false);
 
   const handleStar = async () => {

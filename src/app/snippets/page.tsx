@@ -10,7 +10,7 @@ import Image from 'next/image';
 import SnippetCard from './_components/SnippetCard';
 
 const Page = () => {
-  const snippets = useQuery(api.snippet.getSnippets);
+  const snippets = useQuery(api.public.snippet.getSnippets);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedLanguage, setSelectedLanguage] = useState<string | null>(null);
   const [view, setView] = useState<'grid' | 'list'>('grid');
