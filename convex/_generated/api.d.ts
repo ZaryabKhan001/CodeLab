@@ -13,11 +13,13 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
+import type * as actions_lemonSqueezy from "../actions/lemonSqueezy.js";
 import type * as codeExecution from "../codeExecution.js";
 import type * as http from "../http.js";
 import type * as snippet from "../snippet.js";
 import type * as user from "../user.js";
 import type * as webhooks_clerk from "../webhooks/clerk.js";
+import type * as webhooks_lemonSqueezy from "../webhooks/lemonSqueezy.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -28,11 +30,13 @@ import type * as webhooks_clerk from "../webhooks/clerk.js";
  * ```
  */
 declare const fullApi: ApiFromModules<{
+  "actions/lemonSqueezy": typeof actions_lemonSqueezy;
   codeExecution: typeof codeExecution;
   http: typeof http;
   snippet: typeof snippet;
   user: typeof user;
   "webhooks/clerk": typeof webhooks_clerk;
+  "webhooks/lemonSqueezy": typeof webhooks_lemonSqueezy;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,
