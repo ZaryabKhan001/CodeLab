@@ -17,7 +17,7 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: 'Codexa',
+  title: 'CodeLab',
   description: 'Modern Code Editor',
 };
 
