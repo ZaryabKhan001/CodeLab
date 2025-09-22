@@ -38,4 +38,9 @@ export default defineSchema({
     .index('by_user_Id', ['userId']) // all snippets liked by specific user
     .index('by_snipped_Id', ['snippetId']) // all users liked specific snippet
     .index('by_user_and_snipped_Id', ['userId', 'snippetId']), // specific user like specific snippet or not
+  messages: defineTable({
+    userId: v.string(),
+    role: v.union(v.literal('user'), v.literal('assistant')),
+    content: v.string(),
+  }).index('by_user_id', ['userId']),
 });
