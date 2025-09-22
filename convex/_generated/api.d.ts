@@ -16,6 +16,7 @@ import type {
 import type * as http from "../http.js";
 import type * as internals_lemonSqueezy from "../internals/lemonSqueezy.js";
 import type * as public_codeExecution from "../public/codeExecution.js";
+import type * as public_messages from "../public/messages.js";
 import type * as public_snippet from "../public/snippet.js";
 import type * as public_user from "../public/user.js";
 import type * as webhooks_clerk from "../webhooks/clerk.js";
@@ -33,6 +34,7 @@ declare const fullApi: ApiFromModules<{
   http: typeof http;
   "internals/lemonSqueezy": typeof internals_lemonSqueezy;
   "public/codeExecution": typeof public_codeExecution;
+  "public/messages": typeof public_messages;
   "public/snippet": typeof public_snippet;
   "public/user": typeof public_user;
   "webhooks/clerk": typeof webhooks_clerk;

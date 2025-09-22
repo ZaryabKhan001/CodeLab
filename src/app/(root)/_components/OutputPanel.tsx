@@ -7,15 +7,24 @@ import {
   CheckCircle,
   Clock,
   Copy,
+  Star,
   Terminal,
 } from 'lucide-react';
 import { useMounted } from '@/hooks/useMounted';
+import { useUser } from '@clerk/nextjs';
+import toast from 'react-hot-toast';
+import { useMutation } from 'convex/react';
+import { api } from '../../../../convex/_generated/api';
 
 const OutputPanel = () => {
   const [isCopied, setIsCopied] = useState(false);
-  const { error, isRunning, output } = useCodeEditorStore();
+  const { error, isRunning, output, askAI, isAskingAI, setIsAskingAI } =
+    useCodeEditorStore();
   const hasContent = error || output;
   const mounted = useMounted();
+  const { user } = useUser();
+
+  const createMessage = useMutation(api.public.messages.createMessage);
 
   if (!mounted) return null;
 
@@ -29,6 +38,39 @@ const OutputPanel = () => {
     }, 2000);
   };
 
+  const handleExplain = async () => {
+    try {
+      setIsAskingAI(true);
+      const userMessageAdded = await createMessage({
+        userId: user?.id as string,
+        content: 'Explain',
+        role: 'user',
+      });
+      if (!userMessageAdded) {
+        throw new Error('Error in user message adding into DB');
+      }
+      const reply = await askAI('explain');
+      if (!reply) {
+        throw new Error('Error in getting reply from AI');
+      }
+
+      const AIReplyAdded = await createMessage({
+        userId: user?.id as string,
+        content: reply,
+        role: 'assistant',
+      });
+
+      if (!AIReplyAdded) {
+        throw new Error('Error in AI reply message adding into DB');
+      }
+    } catch (error) {
+      console.log('Error in asking AI', error);
+      toast.error('Error in asking AI');
+    } finally {
+      setIsAskingAI(false);
+    }
+  };
+
   return (
     <div className='relative bg-[#181825] rounded-xl p-4 ring-1 ring-gray-800/50'>
       <div className='flex items-center justify-between mb-3'>
@@ -39,23 +81,35 @@ const OutputPanel = () => {
           <span className='text-sm font-medium text-gray-300'>Output</span>
         </div>
         {hasContent && (
-          <button
-            className='flex items-center gap-1.5 px-2.5 py-1.5 text-xs text-gray-400 hover:text-gray-300 bg-[#1e1e2e] 
+          <div className='flex justify-center items-center gap-4'>
+            {user && (
+              <button
+                className='flex items-center gap-1.5 px-2.5 py-1.5 text-xs text-gray-400 hover:text-gray-300 bg-[#1e1e2e] 
             rounded-lg ring-1 ring-gray-800/50 hover:ring-gray-700/50 transition-all'
-            onClick={handleCopy}
-          >
-            {isCopied ? (
-              <>
-                <CheckCircle className='w-3.5 h-3.5' />
-                Copied!
-              </>
-            ) : (
-              <>
-                <Copy className='w-3.5 h-3.5' />
-                Copy
-              </>
+                onClick={handleExplain}
+                disabled={isAskingAI}
+              >
+                <Star className='w-3.5 h-3.5' /> Explain
+              </button>
             )}
-          </button>
+            <button
+              className='flex items-center gap-1.5 px-2.5 py-1.5 text-xs text-gray-400 hover:text-gray-300 bg-[#1e1e2e] 
+            rounded-lg ring-1 ring-gray-800/50 hover:ring-gray-700/50 transition-all'
+              onClick={handleCopy}
+            >
+              {isCopied ? (
+                <>
+                  <CheckCircle className='w-3.5 h-3.5' />
+                  Copied!
+                </>
+              ) : (
+                <>
+                  <Copy className='w-3.5 h-3.5' />
+                  Copy
+                </>
+              )}
+            </button>
+          </div>
         )}
       </div>
       <div className='relative'>

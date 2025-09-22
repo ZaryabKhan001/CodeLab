@@ -2,6 +2,8 @@ import { create } from 'zustand';
 import { CodeEditorState } from '../types/index';
 import * as monaco from 'monaco-editor';
 import { LANGUAGE_CONFIG } from '@/app/(root)/_constants';
+import OpenAI from 'openai';
+import type { ChatCompletionMessageParam } from 'openai/resources/chat/completions';
 
 const getInitialState = () => {
   if (typeof window === 'undefined') {
@@ -21,6 +23,11 @@ const getInitialState = () => {
   };
 };
 
+const openai = new OpenAI({
+  apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY!,
+  dangerouslyAllowBrowser: true,
+});
+
 const useCodeEditorStore = create<CodeEditorState>((set, get) => {
   const initialState = getInitialState();
   return {
@@ -30,6 +37,7 @@ const useCodeEditorStore = create<CodeEditorState>((set, get) => {
     error: null,
     editor: null,
     executionResult: null,
+    isAskingAI: false,
     setEditor: (editor: monaco.editor.IStandaloneCodeEditor) => {
       const savedCode =
         localStorage.getItem(`editor-code-${get().language}`) || '';
@@ -39,7 +47,9 @@ const useCodeEditorStore = create<CodeEditorState>((set, get) => {
       }
       set({ editor });
     },
+
     getCode: (): string => get().editor?.getValue() || '',
+
     setLanguage: (language) => {
       const currentCode = get().editor?.getValue();
       if (currentCode) {
@@ -48,14 +58,17 @@ const useCodeEditorStore = create<CodeEditorState>((set, get) => {
       localStorage.setItem('editor-language', language);
       set({ language, output: '', error: null });
     },
+
     setTheme: (theme: string) => {
       localStorage.setItem('editor-theme', theme);
       set({ theme });
     },
+
     setFontSize: (fontSize) => {
       localStorage.setItem('editor-font-size', fontSize.toString());
       set({ fontSize });
     },
+
     runCode: async () => {
       const { language, getCode } = get();
       const code = getCode();
@@ -132,9 +145,58 @@ const useCodeEditorStore = create<CodeEditorState>((set, get) => {
         set({ isRunning: false });
       }
     },
+
+    askAI: async (input: string): Promise<string> => {
+      const { error, output, language, getCode } = get();
+      const code = getCode();
+
+      const systemPrompt: ChatCompletionMessageParam = {
+        role: 'system',
+        content: `You are a professional coding assistant integrated into a code editor. 
+Your job is to:
+1. When given {code}, {language}, and {error} → analyze the code, explain the error in simple terms, and suggest possible fixes or improvements with clear reasoning and examples.
+2. When given {code}, {language}, and {output} → explain what the code is doing, how it works, and why it produced that output. Provide insights into best practices or optimizations if relevant.
+3. When given a general user question (without code) → answer it as a helpful and knowledgeable software engineering assistant. Keep answers concise, accurate, and beginner-friendly, but include advanced insights when useful.
+Always:
+- Be professional and clear.
+- Avoid unnecessary jargon.
+- Provide step-by-step reasoning when explaining errors or outputs.
+- Use examples where possible.
+- Keep explanations adaptable for both beginners and intermediate developers.`,
+      };
+
+      const userInput: ChatCompletionMessageParam =
+        input !== 'explain'
+          ? {
+              role: 'user',
+              content: input,
+            }
+          : {
+              role: 'user',
+              content: JSON.stringify({
+                type: error ? 'error_analysis' : 'output_explanation',
+                language,
+                code,
+                error,
+                output,
+              }),
+            };
+
+      const completion = await openai.chat.completions.create({
+        model: 'gpt-4o-mini',
+        messages: [systemPrompt, userInput],
+      });
+
+      const reply = completion.choices[0]?.message?.content ?? '';
+      console.log(reply);
+      return reply;
+    },
+
+    setIsAskingAI: (value: boolean) => set({isAskingAI: value})
   };
 });
 
-export const getExecutionResult = () => useCodeEditorStore.getState().executionResult;
+export const getExecutionResult = () =>
+  useCodeEditorStore.getState().executionResult;
 
 export default useCodeEditorStore;

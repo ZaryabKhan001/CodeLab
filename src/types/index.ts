@@ -1,5 +1,5 @@
-import { Id } from "../../convex/_generated/dataModel";
-import * as monaco from "monaco-editor";
+import { Id } from '../../convex/_generated/dataModel';
+import * as monaco from 'monaco-editor';
 
 export interface Theme {
   id: string;
@@ -46,17 +46,20 @@ export interface CodeEditorState {
   fontSize: number;
   editor: monaco.editor.IStandaloneCodeEditor | null;
   executionResult: ExecutionResult | null;
+  isAskingAI: boolean;
 
+  setIsAskingAI: (value: boolean) => void;
   setEditor: (editor: monaco.editor.IStandaloneCodeEditor) => void;
   getCode: () => string;
   setLanguage: (language: string) => void;
   setTheme: (theme: string) => void;
   setFontSize: (fontSize: number) => void;
   runCode: () => Promise<void>;
+  askAI: (input: string) => Promise<string>;
 }
 
 export interface Snippet {
-  _id: Id<"snippet">;
+  _id: Id<'snippet'>;
   _creationTime: number;
   userId: string;
   language: string;
@@ -64,3 +67,8 @@ export interface Snippet {
   title: string;
   userName: string;
 }
+
+export type Message = {
+  role: 'user' | 'assistant';
+  content: string;
+};
