@@ -13,8 +13,8 @@ import remarkGfm from 'remark-gfm';
 import rehypeHighlight from 'rehype-highlight';
 
 export default function AskAI() {
-  const [open, setOpen] = useState(false);
-  const [input, setInput] = useState('');
+  const [open, setOpen] = useState<boolean>(false);
+  const [input, setInput] = useState<string>('');
 
   const { user } = useUser();
   const {
@@ -99,9 +99,9 @@ export default function AskAI() {
         {!open && (
           <button
             onClick={() => setOpen(true)}
-            className='bg-gradient-to-r from-blue-600 to-blue-500 text-white px-4 py-2 rounded-md shadow-lg flex justify-center items-center gap-3'
+            className='bg-gradient-to-r from-blue-600 to-blue-500 px-4 py-2 rounded-md shadow-lg flex justify-center items-center gap-3 text-sm'
           >
-            <MessageSquare />
+            <MessageSquare className='w-4 h-4' />
             Ask AI
           </button>
         )}
