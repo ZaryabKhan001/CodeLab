@@ -13,7 +13,6 @@ import remarkGfm from 'remark-gfm';
 import rehypeHighlight from 'rehype-highlight';
 
 export default function AskAI() {
-  const [open, setOpen] = useState<boolean>(false);
   const [input, setInput] = useState<string>('');
 
   const { user } = useUser();
@@ -21,6 +20,8 @@ export default function AskAI() {
     askAI,
     isAskingAI: isSubmitting,
     setIsAskingAI: setIsSubmitting,
+    isChatOpen,
+    setIsChatOpen
   } = useCodeEditorStore();
   const messageBottomRef = useRef<HTMLDivElement>(null);
 
@@ -32,7 +33,7 @@ export default function AskAI() {
   } = usePaginatedQuery(
     api.public.messages.getMessages,
     user ? { userId: user?.id } : 'skip',
-    { initialNumItems: 10 }
+    { initialNumItems: 5 }
   );
   const createMessage = useMutation(api.public.messages.createMessage);
 
@@ -86,19 +87,15 @@ export default function AskAI() {
       block: 'end',
       inline: 'nearest',
     });
-  }, [messages, open]);
-
-  useEffect(() => {
-    setOpen(true);
-  }, [messages]);
+  }, [messages, isChatOpen]);
 
   return user ? (
     <>
       {' '}
       <div className='absolute bottom-0 right-0 lg:bottom-16 lg:right-4 m-4 transition-all duration-200' style={{zIndex: 999}}>
-        {!open && (
+        {!isChatOpen && (
           <button
-            onClick={() => setOpen(true)}
+            onClick={() => setIsChatOpen(true)}
             className='bg-gradient-to-r from-blue-600 to-blue-500 px-4 py-2 rounded-md shadow-lg flex justify-center items-center gap-3 text-sm'
           >
             <MessageSquare className='w-4 h-4' />
@@ -106,7 +103,7 @@ export default function AskAI() {
           </button>
         )}
 
-        {open && (
+        {isChatOpen && (
           <div className='h-[500px] w-[350px] sm:w-[500px] lg:w-[900px] z-999 flex flex-col shadow-lg rounded-md bg-[#1e1e2e]/50 backdrop-blur-sm border border-[#313244] '>
             <div className='inset-0 bg-gradient-to-r from-blue-600 to-blue-500 text-white p-3 rounded-t-md flex justify-between items-center'>
               <div>
@@ -115,7 +112,7 @@ export default function AskAI() {
                   {`${user?.firstName ?? ''} ${user?.lastName ?? ''}`}
                 </span>
               </div>
-              <button onClick={() => setOpen(false)}>
+              <button onClick={() => setIsChatOpen(false)}>
                 <X />
               </button>
             </div>
@@ -134,7 +131,7 @@ export default function AskAI() {
                     key={idx}
                     className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} items-start gap-4 mt-4`}
                   >
-                    <div className='bg-[#0a0a0f]/80 p-3 rounded-md w-fit flex justify-start items-start gap-2 max-w-full overflow-x-auto'>
+                    <div className='bg-slate-800 p-3 rounded-md w-fit flex justify-start items-start gap-2 max-w-full overflow-x-auto'>
                       <div className='prose prose-invert max-w-none text-sm'>
                         <ReactMarkdown
                           remarkPlugins={[remarkGfm]}

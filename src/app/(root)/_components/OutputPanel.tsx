@@ -18,7 +18,7 @@ import { api } from '../../../../convex/_generated/api';
 
 const OutputPanel = () => {
   const [isCopied, setIsCopied] = useState(false);
-  const { error, isRunning, output, askAI, isAskingAI, setIsAskingAI } =
+  const { error, isRunning, output, askAI, isAskingAI, setIsAskingAI, setIsChatOpen } =
     useCodeEditorStore();
   const hasContent = error || output;
   const mounted = useMounted();
@@ -41,6 +41,7 @@ const OutputPanel = () => {
   const handleExplain = async () => {
     try {
       setIsAskingAI(true);
+      setIsChatOpen(true);
       const userMessageAdded = await createMessage({
         userId: user?.id as string,
         content: 'Explain',

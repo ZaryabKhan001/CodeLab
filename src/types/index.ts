@@ -47,6 +47,7 @@ export interface CodeEditorState {
   editor: monaco.editor.IStandaloneCodeEditor | null;
   executionResult: ExecutionResult | null;
   isAskingAI: boolean;
+  isChatOpen: boolean;
 
   setIsAskingAI: (value: boolean) => void;
   setEditor: (editor: monaco.editor.IStandaloneCodeEditor) => void;
@@ -56,6 +57,7 @@ export interface CodeEditorState {
   setFontSize: (fontSize: number) => void;
   runCode: () => Promise<void>;
   askAI: (input: string) => Promise<string>;
+  setIsChatOpen: (value: boolean) => void;
 }
 
 export interface Snippet {

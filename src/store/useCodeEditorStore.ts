@@ -38,6 +38,7 @@ const useCodeEditorStore = create<CodeEditorState>((set, get) => {
     editor: null,
     executionResult: null,
     isAskingAI: false,
+    isChatOpen: false,
     setEditor: (editor: monaco.editor.IStandaloneCodeEditor) => {
       const savedCode =
         localStorage.getItem(`editor-code-${get().language}`) || '';
@@ -192,7 +193,9 @@ Always:
       return reply;
     },
 
-    setIsAskingAI: (value: boolean) => set({isAskingAI: value})
+    setIsAskingAI: (value: boolean) => set({isAskingAI: value}),
+
+    setIsChatOpen: (value: boolean) => set({isChatOpen: value})
   };
 });
 
