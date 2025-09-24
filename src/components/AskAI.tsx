@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 import { FormEvent, useEffect, useRef, useState } from 'react';
 import { Loader, MessageSquare, X } from 'lucide-react';
@@ -14,6 +15,13 @@ import rehypeHighlight from 'rehype-highlight';
 
 export default function AskAI() {
   const [input, setInput] = useState<string>('');
+  const [isLoadMoreHappened, setisLoadMoreHappened] = useState<boolean>(false);
+  const [lastSeenMessageId, setLastSeenMessageId] = useState<string | null>(
+    null
+  );
+  const [lastSeenMessageOffset, setLastSeenMessageOffset] = useState<
+    number | null
+  >(null);
 
   const { user } = useUser();
   const {
@@ -21,9 +29,10 @@ export default function AskAI() {
     isAskingAI: isSubmitting,
     setIsAskingAI: setIsSubmitting,
     isChatOpen,
-    setIsChatOpen
+    setIsChatOpen,
   } = useCodeEditorStore();
   const messageBottomRef = useRef<HTMLDivElement>(null);
+  const messageContainerRef = useRef<HTMLDivElement>(null);
 
   const {
     isLoading,
@@ -33,9 +42,10 @@ export default function AskAI() {
   } = usePaginatedQuery(
     api.public.messages.getMessages,
     user ? { userId: user?.id } : 'skip',
-    { initialNumItems: 5 }
+    { initialNumItems: 10 }
   );
   const createMessage = useMutation(api.public.messages.createMessage);
+  const reversedMessages = [...messages].reverse();
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -72,27 +82,81 @@ export default function AskAI() {
     }
   };
 
-  const handleLoadMore = () => {
-    if (status === 'CanLoadMore') {
+  const handleMessagesScroll = async () => {
+    const container = messageContainerRef.current;
+    if (!container) return;
+
+    if (container.scrollTop === 0 && status === 'CanLoadMore') {
+      // Get the top-most visible message (oldest, at top)
+      const topMsg = reversedMessages[reversedMessages.length - 1];
+      const topMsgEl = messageRefs.current[topMsg._id];
+      if (topMsgEl) {
+        setLastSeenMessageId(topMsg._id);
+        setLastSeenMessageOffset(
+          topMsgEl.getBoundingClientRect().top -
+            container.getBoundingClientRect().top
+        );
+      }
       loadMore(10);
+      setisLoadMoreHappened(true);
+    } else {
+      setisLoadMoreHappened(false);
     }
   };
 
-  useEffect(() => {
-    if (!messageBottomRef.current) return;
-    if (messages.length === 0) return;
-
-    messageBottomRef.current?.scrollIntoView({
-      behavior: messages.length === 1 ? 'auto' : 'smooth',
+  const scrollToBottom = (
+    ref: React.RefObject<HTMLDivElement>,
+    behavior: ScrollBehavior = 'auto'
+  ) => {
+    if (!ref.current || messages.length === 0) return;
+    ref.current?.scrollIntoView({
+      behavior: behavior,
       block: 'end',
       inline: 'nearest',
     });
-  }, [messages, isChatOpen]);
+  };
+
+  useEffect(() => {
+    if (isChatOpen && messages.length > 0) {
+      scrollToBottom(messageBottomRef, 'auto');
+    }
+  }, [isChatOpen]);
+
+  useEffect(() => {
+    if (isChatOpen && messages.length > 0 && !isLoadMoreHappened) {
+      scrollToBottom(messageBottomRef, 'smooth');
+    }
+  }, [messages.length]);
+
+  const messageRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
+
+  useEffect(() => {
+    if (
+      isLoadMoreHappened &&
+      lastSeenMessageId &&
+      messageRefs.current[lastSeenMessageId] &&
+      lastSeenMessageOffset !== null
+    ) {
+      const container = messageContainerRef.current;
+      const msgEl = messageRefs.current[lastSeenMessageId];
+      if (container && msgEl) {
+        const newOffset =
+          msgEl.getBoundingClientRect().top -
+          container.getBoundingClientRect().top;
+        container.scrollTop += newOffset - lastSeenMessageOffset;
+      }
+      setLastSeenMessageId(null);
+      setLastSeenMessageOffset(null);
+    }
+  }, [messages]);
 
   return user ? (
     <>
       {' '}
-      <div className='absolute bottom-0 right-0 lg:bottom-16 lg:right-4 m-4 transition-all duration-200' style={{zIndex: 999}}>
+      <div
+        className='absolute bottom-0 right-0 lg:bottom-16 lg:right-4 m-4 transition-all duration-200'
+        style={{ zIndex: 999 }}
+      >
         {!isChatOpen && (
           <button
             onClick={() => setIsChatOpen(true)}
@@ -117,19 +181,26 @@ export default function AskAI() {
               </button>
             </div>
 
-            <div className='flex-1 overflow-y-auto p-3 space-y-2'>
+            <div
+              className='flex-1 overflow-y-auto space-y-2'
+              ref={messageContainerRef}
+              onScroll={handleMessagesScroll}
+            >
               {isLoading ? (
-                <MessageSkeleton count={8} />
+                <MessageSkeleton count={5} />
               ) : messages.length === 0 ? (
                 <div className='text-gray-500 text-sm flex flex-col justify-center items-center gap-2 w-full h-full'>
                   <MessageSquare className='size-12' />
                   Start a Conversation
                 </div>
               ) : (
-                messages.map((msg: Message, idx) => (
+                reversedMessages.map((msg: Message, idx) => (
                   <div
                     key={idx}
-                    className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} items-start gap-4 mt-4`}
+                    className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} items-start gap-4 mt-4 p-3`}
+                    ref={(el) => {
+                      messageRefs.current[msg._id] = el;
+                    }}
                   >
                     <div className='bg-slate-800 p-3 rounded-md w-fit flex justify-start items-start gap-2 max-w-full overflow-x-auto'>
                       <div className='prose prose-invert max-w-none text-sm'>

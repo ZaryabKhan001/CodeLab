@@ -71,6 +71,7 @@ export interface Snippet {
 }
 
 export type Message = {
+  _id: Id<'messages'>;
   role: 'user' | 'assistant';
   content: string;
 };

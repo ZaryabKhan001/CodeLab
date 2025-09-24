@@ -19,10 +19,8 @@ export const getMessages = query({
       .order('desc')
       .paginate(args.paginationOpts);
 
-    return {
-      ...messages,
-      page: messages.page.reverse(),
-    };
+    return messages;
+      
   },
 });
 
