@@ -1,36 +1,67 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+---
 
-## Getting Started
+# CodeLab 🚀
 
-First, run the development server:
+**AI-Powered Code Editor where coding meets AI, community, and creativity!**
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+Imagine a place where you can **write code, get AI suggestions, solve doubts, and connect with developers** — all in one platform. That’s **CodeLab**.
+
+---
+
+## 🎥 Demo
+
+Watch CodeLab in action:
+
+```html
+<video width="800" controls>
+  <source src="/demo.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🌟 Features
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+* 🔐 **Authentication with Clerk**
+* 💻 **Code suggestions & AI-powered doubt solver**
+* 🌍 **Share, comment, like, and search code snippets**
+* 🛠 **Customizable editor** (themes & font sizes)
+* 💳 **Payments via Lemon Squeezy** (Free = JavaScript, Pro = all languages)
+* 👤 **Profile page** tracking your coding activity
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## 🛠 Tech Stack
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+* **Frontend:** Next.js, React, Monaco Editor, Framer Motion
+* **Backend:** Convex (queries, actions, mutations)
+* **AI:** OpenAI
+* **State Management:** Zustand
+* **Deployment:** Vercel
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 📚 What I Learned
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+* Building **real-time backend** with Convex
+* Managing **persistent state** with Zustand
+* Integrating **AI for code explanations**
+* Developing a **full-featured developer community platform**
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## 🔗 Links
+
+* **Live Preview:** [CodeLab](https://code-lab-six.vercel.app/)
+* **GitHub Repo:** [CodeLab](https://github.com/ZaryabKhan001/CodeLab)
+
+---
+
+✨ **CodeLab makes coding smarter, collaborative, and fun!**
+
+---
+
+#AI #Nextjs #OpenAI #CodeLab #Vercel #WebDevelopment #DeveloperCommunity
+
+---
