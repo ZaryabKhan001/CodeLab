@@ -1,6 +1,5 @@
----
 
-# CodeLab 🚀
+# CodeLab | AI Powered Code Editor
 
 **AI-Powered Code Editor where coding meets AI, community, and creativity!**
 
@@ -10,14 +9,9 @@ Imagine a place where you can **write code, get AI suggestions, solve doubts, an
 
 ## 🎥 Demo
 
-Watch CodeLab in action:
+Click the image to view the live demo:
 
-```html
-<video width="800" controls>
-  <source src="/demo.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
-```
+[![CodeLab Demo](public/demo.png)](https://code-lab-six.vercel.app/)
 
 ---
 
@@ -26,8 +20,8 @@ Watch CodeLab in action:
 * 🔐 **Authentication with Clerk**
 * 💻 **Code suggestions & AI-powered doubt solver**
 * 🌍 **Share, comment, like, and search code snippets**
-* 🛠 **Customizable editor** (themes & font sizes)
-* 💳 **Payments via Lemon Squeezy** (Free = JavaScript, Pro = all languages)
+* 🛠 **Customizable editor**
+* 💳 **Payments via Lemon Squeezy**
 * 👤 **Profile page** tracking your coding activity
 
 ---
@@ -59,9 +53,5 @@ Watch CodeLab in action:
 ---
 
 ✨ **CodeLab makes coding smarter, collaborative, and fun!**
-
----
-
-#AI #Nextjs #OpenAI #CodeLab #Vercel #WebDevelopment #DeveloperCommunity
 
 ---
