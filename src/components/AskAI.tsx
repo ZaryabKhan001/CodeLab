@@ -59,7 +59,9 @@ export default function AskAI() {
       if (!userMessageAdded) {
         throw new Error('Error in user message adding into DB');
       }
-      const reply = await askAI(input.trim());
+      const userInput = input;
+      setInput('');
+      const reply = await askAI(userInput.trim());
       if (!reply) {
         throw new Error('Error in getting reply from AI');
       }
