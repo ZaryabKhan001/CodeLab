@@ -18,7 +18,7 @@ const geistMono = localFont({
 
 export const metadata: Metadata = {
   title: 'CodeLab',
-  description: 'Modern Code Editor',
+  description: 'AI Powered | Modern Code Editor',
 };
 
 export default function RootLayout({
